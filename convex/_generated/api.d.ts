@@ -8,13 +8,23 @@
  * @module
  */
 
+import type * as migrations_projects from "../migrations/projects.js";
+import type * as queries_projects from "../queries/projects.js";
+import type * as tables_index from "../tables/index.js";
+import type * as tables_projects from "../tables/projects.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "migrations/projects": typeof migrations_projects;
+  "queries/projects": typeof queries_projects;
+  "tables/index": typeof tables_index;
+  "tables/projects": typeof tables_projects;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
