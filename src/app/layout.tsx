@@ -3,18 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
 import { inter, plexMono } from "@/lib/constants";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { dark } from "@clerk/themes";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
-import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
+
+import { Providers } from "@/components/providers/Providers";
+import { Authenticated } from "convex/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,37 +18,13 @@ const RootLayout = ({
   children: ReactNode;
 }>) => {
   return (
-    <ClerkProvider
-      appearance={{
-        theme: dark,
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} ${plexMono.variable} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          > <ConvexClientProvider>
-            <header className="flex justify-end items-center p-4 gap-4 h-16">
-              <SignedOut>
-                <SignInButton />
-                <SignUpButton>
-                  <Button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                    Sign Up
-                  </Button>
-                </SignUpButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </header>
-           {children}</ConvexClientProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${inter.variable} ${plexMono.variable} antialiased`}
+      >
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 };
 export default RootLayout;

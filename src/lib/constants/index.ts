@@ -10,3 +10,5 @@ export const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ['400','500','600','700']
 });
+
+export const URL_REGEXP = /https?:\/\/[^s]+/g;
