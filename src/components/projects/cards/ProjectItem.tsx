@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Doc } from "../../../../convex/_generated/dataModel"
-import { AlertCircle, ArrowRight, Globe, Loader2 } from "lucide-react";
 import { formatTimestamp } from "@/lib/utils";
 import { FaGithub } from "react-icons/fa";
+import { AlertCircle, Globe, Loader2 } from "lucide-react";
+
 
 interface ProjectItemProps {
   data: Doc<'projects'>;
 }
-const getProjectIcon = (project:Doc<'projects'>)=>{
+ const getProjectIcon = (project:Doc<'projects'>,className?:string)=>{
    if (project.importStatus ==='completed') {
     return <FaGithub className="size-3.5 text-muted-foreground"/>
    } else if (project.importStatus==='failed'){
@@ -20,6 +21,7 @@ const getProjectIcon = (project:Doc<'projects'>)=>{
      return <Globe className="size-3.5 text-muted-foreground" />;
    }
 }
+
 const ProjectItem = ({data}:ProjectItemProps) => {
   return (
     <Link
