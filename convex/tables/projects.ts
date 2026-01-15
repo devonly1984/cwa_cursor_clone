@@ -7,4 +7,14 @@ export default defineTable({
   importStatus: v.optional(
     v.union(v.literal("importing"), v.literal("completed"), v.literal("failed"))
   ),
+  exportStatus: v.optional(
+    v.union(
+    v.literal("exporting"), v.literal("completed"), v.literal("failed"),
+    v.literal('cancelled')
+    ),
+    
+
+  ),
+  exportRepoUrl: v.optional(v.string()),
+  updatedAt: v.number()
 }).index("by_owner", ["ownerId"]);

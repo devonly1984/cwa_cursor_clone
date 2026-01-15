@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as lib_utils from "../lib/utils.js";
 import type * as mutations_projects from "../mutations/projects.js";
 import type * as queries_projects from "../queries/projects.js";
 import type * as tables_index from "../tables/index.js";
@@ -20,6 +21,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "lib/utils": typeof lib_utils;
   "mutations/projects": typeof mutations_projects;
   "queries/projects": typeof queries_projects;
   "tables/index": typeof tables_index;
