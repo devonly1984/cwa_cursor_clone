@@ -1,6 +1,6 @@
 "use client"
 
-import { useProjectsPratial } from "@/hooks/useProjects";
+import { useProjectsPartial } from "@/hooks/useProjects";
 import { Spinner } from "../ui/spinner";
 import { Button } from "../ui/button";
 import { Kbd } from "../ui/kbd";
@@ -11,7 +11,7 @@ interface ProjectsListProps {
     onViewAll: ()=>void;
 }
 const ProjectsList = ({ onViewAll }: ProjectsListProps) => {
-    const projects = useProjectsPratial(6);
+    const projects = useProjectsPartial(6);
   
     if (projects===undefined) {
         return <Spinner className="size-4 text-ring" />;

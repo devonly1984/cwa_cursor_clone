@@ -5,7 +5,6 @@ import { ReactNode } from "react";
 import { inter, plexMono } from "@/lib/constants";
 
 import { Providers } from "@/components/providers/Providers";
-import { Authenticated } from "convex/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
