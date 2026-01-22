@@ -9,8 +9,11 @@
  */
 
 import type * as lib_utils from "../lib/utils.js";
+import type * as mutations_files from "../mutations/files.js";
 import type * as mutations_projects from "../mutations/projects.js";
+import type * as queries_files from "../queries/files.js";
 import type * as queries_projects from "../queries/projects.js";
+import type * as tables_files from "../tables/files.js";
 import type * as tables_index from "../tables/index.js";
 import type * as tables_projects from "../tables/projects.js";
 
@@ -22,8 +25,11 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "lib/utils": typeof lib_utils;
+  "mutations/files": typeof mutations_files;
   "mutations/projects": typeof mutations_projects;
+  "queries/files": typeof queries_files;
   "queries/projects": typeof queries_projects;
+  "tables/files": typeof tables_files;
   "tables/index": typeof tables_index;
   "tables/projects": typeof tables_projects;
 }>;

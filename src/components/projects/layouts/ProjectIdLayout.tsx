@@ -4,7 +4,7 @@ import { ReactNode } from "react"
 import Navbar from "./Navbar";
 import { Id } from "../../../../convex/_generated/dataModel";
 import {Allotment} from 'allotment'
-import { DEFAULT_CONVERSATION_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE, MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from "@/lib/constants";
+import { DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE, MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from "@/lib/constants";
 import "allotment/dist/style.css";
 interface ProjectIdLayoutProps {
   children: ReactNode;
@@ -20,16 +20,13 @@ const ProjectIdLayout = ({
       <div className="flex-1 flex overflow-hidden">
         <Allotment
           className="flex-1"
-          defaultSizes={[
-            DEFAULT_CONVERSATION_SIDEBAR_WIDTH,
-            DEFAULT_MAIN_SIZE,
-          ]}
+          defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}
         >
           <Allotment.Pane
             snap
             minSize={MIN_SIDEBAR_WIDTH}
             maxSize={MAX_SIDEBAR_WIDTH}
-            preferredSize={DEFAULT_CONVERSATION_SIDEBAR_WIDTH}
+            preferredSize={DEFAULT_SIDEBAR_WIDTH}
           >
             <div className="">Conversation sidebar</div>
           </Allotment.Pane>

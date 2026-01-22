@@ -1,1 +1,2 @@
-export {default} from './projects'
+export {default as projects} from './projects'
+export {default as files} from './files';
