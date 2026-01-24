@@ -1,4 +1,4 @@
-"use client"
+
 import { ChevronRight } from "lucide-react";
 import {FileIcon,FolderIcon} from '@react-symbols/icons/utils'
 import { useState } from "react";

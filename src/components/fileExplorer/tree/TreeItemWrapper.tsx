@@ -8,13 +8,20 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { getItemPadding } from "@/lib/utils";
-import { Doc
-
- } from "../../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+
  interface TreeItemWrapperProps {
- 
+ item: Doc<"files">;
+   children: ReactNode;
+   level: number;
+   isActive?: boolean;
+   onClick?: () => void;
+   onDoubleClick?: () => void;
+   onRename?: () => void;
+   onDelete?: () => void;
+   onCreateFile?: () => void;
+   onCreateFolder?: () => void;
  }
 const TreeItemWrapper = ({
   item,
@@ -27,20 +34,11 @@ const TreeItemWrapper = ({
   onDelete,
   onCreateFile,
   onCreateFolder,
-}: {  item: Doc<"files">;
-   children: ReactNode;
-   level: number;
-   isActive?: boolean;
-   onClick?: () => void;
-   onDoubleClick?: () => void;
-   onRename?: () => void;
-   onDelete?: () => void;
-   onCreateFile?: () => void;
-   onCreateFolder?: () => void;}) => {
+}: TreeItemWrapperProps) => {
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
-        <Button
+        <button
           onClick={onClick}
           onDoubleClick={onDoubleClick}
           onKeyDown={(e) => {
@@ -58,7 +56,7 @@ const TreeItemWrapper = ({
           }}
         >
           {children}
-        </Button>
+        </button>
       </ContextMenuTrigger>
       <ContextMenuContent
         onCloseAutoFocus={(e) => e.preventDefault()}

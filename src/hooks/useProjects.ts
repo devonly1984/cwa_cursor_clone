@@ -40,13 +40,13 @@ export const useRenameProject = (projectId: Id<"projects">) => {
     (localStore, args) => {
       const existingProject = localStore.getQuery(
         api.queries.projects.getById,
-        { id: projectId }
+        { id: args.id }
       );
 
       if (existingProject !== undefined && existingProject !== null) {
         localStore.setQuery(
           api.queries.projects.getById,
-          { id: projectId },
+          { id: args.id },
           {
             ...existingProject,
             name: args.name,
