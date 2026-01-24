@@ -13,7 +13,7 @@ export const getFiles = query({
     if (project.ownerId !== identity.subject) {
       throw new Error("Unauthorized to access this project");
     }
-    return ctx.db
+    return await ctx.db
       .query("files")
       .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
       .collect();
@@ -55,14 +55,14 @@ export const getFolderContents = query({
     const files = await ctx.db
       .query("files")
       .withIndex("by_project_parent", (q) =>
-        q.eq("projectId", args.projectId).eq("parentId", args.parentId)
+        q.eq("projectId", args.projectId).eq("parentId", args.parentId),
       )
       .collect();
-      //Sort: folders first, then files alpha
-      return files.sort((a,b)=>{
-        if (a.type==='folder' && b.type==='file')  return -1;
-        if (a.type==='file' && b.type==='folder') return 1;
-        return a.name.localeCompare(b.name)
-      })
+    //Sort: folders first, then files alpha
+    return files.sort((a, b) => {
+      if (a.type === "folder" && b.type === "file") return -1;
+      if (a.type === "file" && b.type === "folder") return 1;
+      return a.name.localeCompare(b.name);
+    });
   },
 });

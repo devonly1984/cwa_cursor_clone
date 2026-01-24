@@ -1,11 +1,11 @@
-"use client"
+
 import { ChevronRight } from "lucide-react";
 import {FileIcon,FolderIcon} from '@react-symbols/icons/utils'
 import { useState } from "react";
 
 import { getItemPadding } from "@/lib/utils";
 interface CreateInputProps {
-  type: "file" | "folder" | null;
+  type: "file" | "folder" ;
   level: number;
   onSubmit: (name: string) => void;
   onCancel: () => void;
@@ -27,7 +27,7 @@ const CreateInput = ({
     }
   return (
     <div className="w-full flex items-center gap-1 h-5.5 bg-accent/30"
-    style={{paddingLeft: getItemPadding(level,type==='file')}}>
+    style={{paddingLeft: getItemPadding(level,type==="file")}}>
       <div className="flex items-center gap-0.5">
         {type === "folder" && (
           <ChevronRight className="size-4 shrink-0 text-muted-foreground" />

@@ -1,5 +1,5 @@
-"use client";
-import { Doc, Id } from "../../../../../convex/_generated/dataModel";
+
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { ChevronRight } from "lucide-react";
 import { FileIcon, FolderIcon } from "@react-symbols/icons/utils";
 import { cn } from "@/lib/utils";
@@ -8,16 +8,12 @@ import {
   useCreateFolder,
   useFolderContents,
   useRenameFile,
-  useDeleteFile,
-  
+  useDeleteFile,  
 } from "@/hooks/useFiles";
 import { getItemPadding } from "@/lib/utils";
-import  LoadingRow  from "@/components/projects/views/fileExplorer/LoadingRow";
-import  CreateInput  from "@/components/projects/views/fileExplorer/CreateInput";
+import { LoadingRow, CreateInput,TreeItemWrapper,RenameInput } from "@/components/fileExplorer";
 import { useState } from "react";
 
-import TreeItemWrapper from "./TreeItemWrapper";
-import RenameInput from "./RenameInput";
 
 interface TreeProps {
   item: Doc<"files">;
@@ -46,7 +42,7 @@ const Tree = ({ item, level = 0, projectId }: TreeProps) => {
   }
   const handleCreate = (name:string)=>{
     setCreating(null);
-    if (creating==='file') {
+    if (creating==="file") {
       createFile({
         projectId,
         name,
@@ -82,8 +78,8 @@ const Tree = ({ item, level = 0, projectId }: TreeProps) => {
       <TreeItemWrapper
         item={item}
         level={level}
+        isActive={false}
         onClick={() => {}}
-      
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
           //close tab

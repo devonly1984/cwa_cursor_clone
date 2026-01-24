@@ -1,6 +1,6 @@
 import { defineSchema } from "convex/server";
-import projects from "./tables/projects";
-import { files } from "./tables";
+
+import { files,projects } from "./tables";
 
 export default defineSchema({
     projects,

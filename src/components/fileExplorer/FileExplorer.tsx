@@ -1,15 +1,14 @@
-"use client";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ChevronRight, CopyMinus, FilePlusCorner, FolderPlus } from "lucide-react";
 import { useState } from "react";
-import { Id } from "../../../../../convex/_generated/dataModel";
+
 import { useProject } from "@/hooks/useProjects";
 import { Button } from "@/components/ui/button";
 import { useCreateFile, useCreateFolder, useFolderContents } from "@/hooks/useFiles";
-import CreateInput from "./CreateInput";
-import LoadingRow from "./LoadingRow";
-import Tree from "./Tree";
+import { LoadingRow, CreateInput, Tree } from "@/components/fileExplorer";
+import { Id } from "../../../convex/_generated/dataModel";
 interface FileExplorerProps {
   projectId: Id<"projects">;
 }
@@ -98,7 +97,7 @@ const FileExplorer = ({ projectId }: FileExplorerProps) => {
         </div>
         {isOpen && (
           <>
-            {rootFiles && <LoadingRow level={0} />}
+            {rootFiles === undefined && <LoadingRow level={0} />}
             {creating && (
               <CreateInput
                 type={creating}

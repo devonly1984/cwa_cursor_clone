@@ -3,7 +3,6 @@ import { mutation } from "../_generated/server";
 import { verifyAuth } from "../lib/utils";
 import { Id } from "../_generated/dataModel";
 
-
 export const createFile = mutation({
   args: {
     projectId: v.id("projects"),
@@ -24,11 +23,11 @@ export const createFile = mutation({
     const files = await ctx.db
       .query("files")
       .withIndex("by_project_parent", (q) =>
-        q.eq("projectId", args.projectId).eq("parentId", args.parentId)
+        q.eq("projectId", args.projectId).eq("parentId", args.parentId),
       )
       .collect();
     const existingFile = files.find(
-      (file) => file.name == args.name && file.type == "file"
+      (file) => file.name === args.name && file.type === "file",
     );
     if (existingFile) {
       throw new Error("File already exists");
@@ -43,9 +42,9 @@ export const createFile = mutation({
       parentId: args.parentId,
       updatedAt: Date.now(),
     });
-      await ctx.db.patch('projects',args.projectId,{
-        updatedAt: Date.now()
-    })
+    await ctx.db.patch("projects", args.projectId, {
+      updatedAt: Date.now(),
+    });
   },
 });
 export const createFolder = mutation({
@@ -67,11 +66,11 @@ export const createFolder = mutation({
     const files = await ctx.db
       .query("files")
       .withIndex("by_project_parent", (q) =>
-        q.eq("projectId", args.projectId).eq("parentId", args.parentId)
+        q.eq("projectId", args.projectId).eq("parentId", args.parentId),
       )
       .collect();
     const existingFile = files.find(
-      (file) => file.name == args.name && file.type == "folder"
+      (file) => file.name === args.name && file.type ==="folder",
     );
     if (existingFile) {
       throw new Error("Folder already exists");
@@ -84,9 +83,9 @@ export const createFolder = mutation({
       parentId: args.parentId,
       updatedAt: Date.now(),
     });
-      await ctx.db.patch('projects',args.projectId,{
-        updatedAt: Date.now()
-    })
+    await ctx.db.patch("projects", args.projectId, {
+      updatedAt: Date.now(),
+    });
   },
 });
 export const renameFile = mutation({
@@ -110,27 +109,28 @@ export const renameFile = mutation({
     const siblings = await ctx.db
       .query("files")
       .withIndex("by_project_parent", (q) =>
-        q.eq("projectId", file.projectId).eq("parentId", file.parentId)
+        q.eq("projectId", file.projectId).eq("parentId", file.parentId),
       )
       .collect();
+      
     const existingSibling = siblings.find(
       (sibling) =>
         sibling.name === args.newName &&
         sibling.type === file.type &&
-        sibling._id !== args.id
+        sibling._id !== args.id,
     );
     if (existingSibling) {
       throw new Error(
-        `A ${file.type} with this name already exists in this location`
+        `A ${file.type} with this name already exists in this location`,
       );
     }
     await ctx.db.patch("files", args.id, {
       name: args.newName,
       updatedAt: Date.now(),
     });
-      await ctx.db.patch('projects',file.projectId,{
-        updatedAt: Date.now()
-    })
+    await ctx.db.patch("projects", file.projectId, {
+      updatedAt: Date.now(),
+    });
   },
 });
 export const deleteFile = mutation({
@@ -159,33 +159,31 @@ export const deleteFile = mutation({
         const children = await ctx.db
           .query("files")
           .withIndex("by_project_parent", (q) =>
-            q.eq("projectId", item.projectId)
-          .eq("parentId", fileId)
+            q.eq("projectId", item.projectId).eq("parentId", fileId),
           )
           .collect();
-          for (const child of children) {
-              await deleteRecursive(child._id)
-          }
-
+        for (const child of children) {
+          await deleteRecursive(child._id);
+        }
       }
       if (item.storageId) {
-        await ctx.storage.delete(item.storageId)
+        await ctx.storage.delete(item.storageId);
       }
-      await ctx.db.delete('files',fileId)
+      await ctx.db.delete("files", fileId);
     };
-      await deleteRecursive(args.id)
-        await ctx.db.patch('projects',file.projectId,{
-        updatedAt: Date.now()
-    })
+    await deleteRecursive(args.id);
+    await ctx.db.patch("projects", file.projectId, {
+      updatedAt: Date.now(),
+    });
   },
 });
 export const updateFile = mutation({
-    args: {
-        id: v.id('files'),
-        content: v.string()
-    },
-    handler: async (ctx, args) => {
-         const identity = await verifyAuth(ctx);
+  args: {
+    id: v.id("files"),
+    content: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
     const file = await ctx.db.get("files", args.id);
     if (!file) {
       throw new Error("File not found");
@@ -198,13 +196,12 @@ export const updateFile = mutation({
       throw new Error("Unauthorized to access this project");
     }
     const now = Date.now();
-    await ctx.db.patch('files',args.id,{
-        content: args.content,
-        updatedAt: now
-    })
-    await ctx.db.patch('projects',file.projectId,{
-        updatedAt: now
-    })
-
-     }
-})
+    await ctx.db.patch("files", args.id, {
+      content: args.content,
+      updatedAt: now,
+    });
+    await ctx.db.patch("projects", file.projectId, {
+      updatedAt: now,
+    });
+  },
+});

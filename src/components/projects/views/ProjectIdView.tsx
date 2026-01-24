@@ -5,14 +5,12 @@ import Tab from "../shared/Tab";
 import { cn } from "@/lib/utils";
 import ExportToGithub from "../buttons/ExportToGithub";
 import { Allotment } from "allotment";
-import {
-  DEFAULT_MAIN_SIZE,
-  DEFAULT_SIDEBAR_WIDTH,
-  MAX_SIDEBAR_WIDTH,
-  MIN_SIDEBAR_WIDTH,
-} from "@/lib/constants";
-import FileExplorer from "./fileExplorer/FileExplorer";
 
+import {FileExplorer} from "@/components/fileExplorer/"
+const MIN_SIDEBAR_WIDTH=200;
+const MAX_SIDEBAR_WIDTH=800;
+const DEFAULT_SIDEBAR_WIDTH=350;
+const DEFAULT_MAIN_SIZE = 1000;
 interface ProjectIdViewProps {
   projectId: Id<"projects">;
 }
