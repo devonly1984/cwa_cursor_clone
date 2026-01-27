@@ -13,6 +13,7 @@ import {
 import { getItemPadding } from "@/lib/utils";
 import { LoadingRow, CreateInput,TreeItemWrapper,RenameInput } from "@/components/fileExplorer";
 import { useState } from "react";
+import { useEditor } from "@/components/editor/hooks/useEditor";
 
 
 interface TreeProps {
@@ -23,11 +24,12 @@ interface TreeProps {
 const Tree = ({ item, level = 0, projectId }: TreeProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
-  const [creating, setCreating] = useState<"file" | "folder" | null>(null);
+  const [creating, setCreating] = useState<"file" | "folder"|null>(null);
   const renamefile = useRenameFile();
   const deleteFile = useDeleteFile();
   const createFile = useCreateFile();
   const createFolder = useCreateFolder();
+  const { openFile, closeTab, activeTabId } = useEditor(projectId);
   const folderContents = useFolderContents({
     projectId,
     parentId: item._id,
@@ -63,6 +65,8 @@ const Tree = ({ item, level = 0, projectId }: TreeProps) => {
   };
   if (item.type === "file") {
     const fileName = item.name;
+    const isActive = activeTabId===item._id
+
     if (isRenaming) {
       return (
         <RenameInput
@@ -79,10 +83,11 @@ const Tree = ({ item, level = 0, projectId }: TreeProps) => {
         item={item}
         level={level}
         isActive={false}
-        onClick={() => {}}
+        onClick={() => openFile(item._id, { pinned: false })}
+        onDoubleClick={() => openFile(item._id, { pinned: true })}
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
-          //close tab
+          closeTab(item._id);
           deleteFile({ id: item._id });
         }}
       >
@@ -184,7 +189,7 @@ const Tree = ({ item, level = 0, projectId }: TreeProps) => {
         onDoubleClick={() => {}}
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
-          //Close tab
+          
           deleteFile({ id: item._id });
         }}
         onCreateFile={() => startCreating("file")}

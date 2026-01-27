@@ -42,7 +42,7 @@ const handleSubmit = ()=>{
   if (!project )return;
   setIsRenaming(false);
   const trimmedName = name.trim();
-  if (!trimmedName|| trimmedName===project.name)  {
+  if (!trimmedName || trimmedName===project.name)  {
     return
   }
   renameProject({ id: projectId, name: trimmedName });

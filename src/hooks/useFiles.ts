@@ -29,3 +29,13 @@ export const useRenameFile = ()=>{
 export const useDeleteFile = ()=>{
     return useMutation(api.mutations.files.deleteFile)
 }
+export const useFile = (fileId:Id<'files'>|null)=>(
+  useQuery(api.queries.files.getFile, fileId ? { id: fileId } : 'skip')
+)
+export const useFilePath = (fileId:Id<'files'>|null)=>(
+  useQuery(api.queries.files.getFilePath, fileId ? { id: fileId } : 'skip')
+)
+export const useUpdateFile = ()=>{
+  return useMutation(api.mutations.files.updateFile)
+  //Optimistic update
+}

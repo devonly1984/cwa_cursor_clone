@@ -7,6 +7,7 @@ import ExportToGithub from "../buttons/ExportToGithub";
 import { Allotment } from "allotment";
 
 import {FileExplorer} from "@/components/fileExplorer/"
+import EditorView from "@/components/editor/views/EditorView";
 const MIN_SIDEBAR_WIDTH=200;
 const MAX_SIDEBAR_WIDTH=800;
 const DEFAULT_SIDEBAR_WIDTH=350;
@@ -49,7 +50,7 @@ const ProjectIdView = ({ projectId }: ProjectIdViewProps) => {
               <FileExplorer projectId={projectId}/>
             </Allotment.Pane>
             <Allotment.Pane>
-              <p>Editor view</p>
+             <EditorView projectId={projectId}/>
             </Allotment.Pane>
           </Allotment>
         </div>
