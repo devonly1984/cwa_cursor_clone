@@ -1,4 +1,4 @@
-import { requestSchema, responseSchema, SuggestionRequest, SuggestionResponse } from '@/lib/suggestion/schemas';
+import { requestSchema, responseSchema, SuggestionRequest, SuggestionResponse } from '@/lib/schemas/suggestions';
 import ky from 'ky';
 import { toast } from 'sonner'
 export const fetcher = async(

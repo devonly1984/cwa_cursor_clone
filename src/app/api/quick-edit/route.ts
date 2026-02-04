@@ -3,9 +3,8 @@ import { NextResponse } from "next/server";
 import { firewallClient } from "@/lib/firecrawl";
 import { auth } from "@clerk/nextjs/server";
 import { QUICK_EDIT_PROMPT, URL_REGEXP } from "@/lib/constants";
-import { FirecrawlClient } from "@mendable/firecrawl-js";
 import { google } from "@ai-sdk/google";
-import { quickEditSchema } from "@/lib/suggestion/quickEdit";
+import { editResponseSchema } from "@/lib/schemas/quickEdit";
 
 export const POST = async (request: Request) => {
   try {
@@ -62,7 +61,7 @@ export const POST = async (request: Request) => {
       .replace("{documentation}", documentationContext);
     const { output } = await generateText({
       model: google("gemini-1.5-flash"),
-      output: Output.object({ schema: quickEditSchema }),
+      output: Output.object({ schema: editResponseSchema }),
       prompt,
     });
     return NextResponse.json({ editedCode: output.editedCode })

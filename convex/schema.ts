@@ -1,8 +1,10 @@
 import { defineSchema } from "convex/server";
 
-import { files,projects } from "./tables";
+import { conversations, files,messages,projects } from "./tables";
 
 export default defineSchema({
     projects,
-    files
+    files,
+    conversations,
+    messages
 })

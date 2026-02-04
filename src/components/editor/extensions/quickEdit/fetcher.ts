@@ -1,4 +1,4 @@
-import { EditRequest, editRequestSchema, EditResponse, editResponseSchema } from '@/lib/suggestion/quickEdit';
+import { EditRequest, editRequestSchema, EditResponse, editResponseSchema } from '@/lib/schemas/quickEdit';
 
 import ky from 'ky';
 import { toast } from 'sonner'
