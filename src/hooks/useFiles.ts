@@ -3,11 +3,11 @@ import { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 
 export const useCreateFile = () => {
-  return useMutation(api.mutations.files.createFile);
+  return useMutation(api.public.mutations.files.createFile);
 };
 
 export const useCreateFolder = () => {
-  return useMutation(api.mutations.files.createFolder);
+  return useMutation(api.public.mutations.files.createFolder);
 };
 export const useFolderContents = ({
   projectId,
@@ -19,23 +19,23 @@ export const useFolderContents = ({
   enabled?: boolean;
 }) => {
   return useQuery(
-    api.queries.files.getFolderContents,
+    api.public.queries.files.getFolderContents,
     enabled ? { projectId, parentId } : "skip",
   );
 };
 export const useRenameFile = ()=>{
-    return useMutation(api.mutations.files.renameFile)
+    return useMutation(api.public.mutations.files.renameFile)
 }
 export const useDeleteFile = ()=>{
-    return useMutation(api.mutations.files.deleteFile)
+    return useMutation(api.public.mutations.files.deleteFile)
 }
 export const useFile = (fileId:Id<'files'>|null)=>(
-  useQuery(api.queries.files.getFile, fileId ? { id: fileId } : 'skip')
+  useQuery(api.public.queries.files.getFile, fileId ? { id: fileId } : 'skip')
 )
 export const useFilePath = (fileId:Id<'files'>|null)=>(
-  useQuery(api.queries.files.getFilePath, fileId ? { id: fileId } : 'skip')
+  useQuery(api.public.queries.files.getFilePath, fileId ? { id: fileId } : 'skip')
 )
 export const useUpdateFile = ()=>{
-  return useMutation(api.mutations.files.updateFile)
+  return useMutation(api.public.mutations.files.updateFile)
   //Optimistic update
 }

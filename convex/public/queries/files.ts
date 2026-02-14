@@ -1,7 +1,7 @@
 import { v } from "convex/values";
-import { query } from "../_generated/server";
+import { query } from "../../_generated/server";
 import { verifyAuth } from "../lib/utils";
-import { Doc, Id } from "../_generated/dataModel";
+import { Doc, Id } from "../../_generated/dataModel";
 
 export const getFiles = query({
   args: { projectId: v.id("projects") },

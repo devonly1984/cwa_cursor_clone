@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { query } from "../_generated/server";
+import { query } from "../../_generated/server";
 import { verifyAuth } from "../lib/utils";
 
 export const getPartial = query({

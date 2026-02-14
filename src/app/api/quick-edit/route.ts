@@ -1,6 +1,6 @@
 import { generateText, Output } from "ai";
 import { NextResponse } from "next/server";
-import { firewallClient } from "@/lib/firecrawl";
+import { firecrawlClient } from "@/lib/firecrawl";
 import { auth } from "@clerk/nextjs/server";
 import { QUICK_EDIT_PROMPT, URL_REGEXP } from "@/lib/constants";
 import { google } from "@ai-sdk/google";
@@ -35,7 +35,7 @@ export const POST = async (request: Request) => {
       const scrapedResults = await Promise.all(
         urls.map(async (url) => {
           try {
-            const result = await firewallClient.scrape(url, {
+            const result = await firecrawlClient.scrape(url, {
               formats: ["markdown"],
             });
             if (result.markdown) {

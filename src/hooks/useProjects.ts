@@ -3,20 +3,20 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 
 export const useProject = (projectId: Id<"projects">) => {
-  return useQuery(api.queries.projects.getById, { id: projectId });
+  return useQuery(api.public.queries.projects.getById, { id: projectId });
 };
 export const useProjects = () => {
-  return useQuery(api.queries.projects.get);
+  return useQuery(api.public.queries.projects.get);
 };
 
 export const useProjectsPartial = (limit: number) => {
-  return useQuery(api.queries.projects.getPartial, { limit });
+  return useQuery(api.public.queries.projects.getPartial, { limit });
 };
 export const useCreateProject = () => {
-  return useMutation(api.mutations.projects.create).withOptimisticUpdate(
+  return useMutation(api.public.mutations.projects.create).withOptimisticUpdate(
     (localStore, args) => {
       const existingProjects = localStore.getQuery(
-        api.queries.projects.get
+        api.public.queries.projects.get
       );
       if (existingProjects !== undefined) {
         const now = Date.now();
@@ -27,7 +27,7 @@ export const useCreateProject = () => {
           ownerId: "anonymouse",
           updatedAt: now,
         };
-        localStore.setQuery(api.queries.projects.get, {}, [
+        localStore.setQuery(api.public.queries.projects.get, {}, [
           newProject,
           ...existingProjects,
         ]);
@@ -36,16 +36,16 @@ export const useCreateProject = () => {
   );
 };
 export const useRenameProject = (projectId: Id<"projects">) => {
-  return useMutation(api.mutations.projects.rename).withOptimisticUpdate(
+  return useMutation(api.public.mutations.projects.rename).withOptimisticUpdate(
     (localStore, args) => {
       const existingProject = localStore.getQuery(
-        api.queries.projects.getById,
+        api.public.queries.projects.getById,
         { id: args.id }
       );
 
       if (existingProject !== undefined && existingProject !== null) {
         localStore.setQuery(
-          api.queries.projects.getById,
+          api.public.queries.projects.getById,
           { id: args.id },
           {
             ...existingProject,
@@ -54,10 +54,10 @@ export const useRenameProject = (projectId: Id<"projects">) => {
           }
         );
       }
-      const existingProjects= localStore.getQuery(api.queries.projects.get)
+      const existingProjects= localStore.getQuery(api.public.queries.projects.get)
       if (existingProjects!==null) {
         localStore.setQuery(
-          api.queries.projects.get,{
+          api.public.queries.projects.get,{
 
           },
           existingProjects?.map(project=>{

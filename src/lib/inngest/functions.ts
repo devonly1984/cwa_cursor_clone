@@ -2,7 +2,7 @@ import { InngestClient } from "@/lib/inngest/client";
 import {generateText} from 'ai'
 import {google} from '@ai-sdk/google'
 import { URL_REGEXP } from "../constants";
-import { firewallClient } from "../firecrawl";
+import { firecrawlClient } from "../firecrawl";
 
 
 export const demoGenerate = InngestClient.createFunction(
@@ -16,7 +16,7 @@ export const demoGenerate = InngestClient.createFunction(
     const scrapedContent = await step.run('scrape-urls',async()=>{
       const results = await Promise.all(
         urls.map(async(url)=>{
-          const result = await firewallClient.scrape(
+          const result = await firecrawlClient.scrape(
             url, { formats: ['markdown'] }
           )
           return result.markdown ?? null;

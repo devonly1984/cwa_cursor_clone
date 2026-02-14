@@ -31,7 +31,8 @@ import {
   useCreateConversation,
   useMessages,
 } from "@/components/conversations/hooks/useConservations";
-import { DEFAULT_CONVERSATION_TITLE } from "../../../../convex/lib/constants";
+import { DEFAULT_CONVERSATION_TITLE } from "../../../../convex/public/lib/constants";
+import PastConversationsDialog from "../dialogs/PastConversationsDialog";
 interface ConversationSidebarProps {
     projectId: Id<'projects'>;
 }
@@ -41,6 +42,8 @@ const ConversationSidebar = ({ projectId }: ConversationSidebarProps) => {
   const createConversation = useCreateConversation();
   const [selectedConversationId, setSelectedConversationId] =
     useState<Id<"conversations"> | null>(null);
+    const [pastConversationsOpen, setPastConversationsOpen] =
+      useState(false);
     const conversations = useConversations(projectId);
     const activeConversationId =
       selectedConversationId ?? conversations?.[0]?._id ?? null;
@@ -51,11 +54,23 @@ const ConversationSidebar = ({ projectId }: ConversationSidebarProps) => {
     const isProcessing = conversationMessages?.some(
       (msg) => msg.status === "processing",
     );
+    const handleCancel = async()=>{
+      try {
+        await ky.post("/api.messages/cancel", {
+          json: {
+            projectId,
+          },
+        });
+      } catch (error) {
+        toast.error("Unable to cancel request")
+      }
+    }
     const handleSubmit = async(message:PromptInputMessage)=>{
       //if processing and no new message , stop function
       if (isProcessing && !message.text) {
-        //await handleCancel
+        await handleCancel()
         setInput("");
+        return;
       }
       let conversationId = activeConversationId;
       if (!conversationId) {
@@ -91,77 +106,96 @@ const ConversationSidebar = ({ projectId }: ConversationSidebarProps) => {
     }
 
   return (
-    <div className="flex flex-col h-full bg-sidebar">
-      <div className="h-8 75 flex items-center justify-between border-b">
-        <div className="text-sm truncate pl-3">
-          {activeConversation?.title ?? DEFAULT_CONVERSATION_TITLE}
+    <>
+      <PastConversationsDialog
+        open={pastConversationsOpen}
+        onOpenChange={setPastConversationsOpen}
+        projectId={projectId}
+        onSelect={setSelectedConversationId}
+      />
+      <div className="flex flex-col h-full bg-sidebar">
+        <div className="h-8 75 flex items-center justify-between border-b">
+          <div className="text-sm truncate pl-3">
+            {activeConversation?.title ?? DEFAULT_CONVERSATION_TITLE}
+          </div>
+          <div className="flex items-center px-1 gap-1">
+            <Button
+              size="icon-xs"
+              variant={"highlight"}
+              onClick={() => setPastConversationsOpen(true)}
+            >
+              <History className="size-3.5" />
+            </Button>
+            <Button
+              size="icon-xs"
+              variant={"highlight"}
+              onClick={handleCreateConversation}
+            >
+              <Plus className="size-3.5" />
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center px-1 gap-1">
-          <Button size="icon-xs" variant={"highlight"}>
-            <History className="size-3.5" />
-          </Button>
-          <Button
-            size="icon-xs"
-            variant={"highlight"}
-            onClick={handleCreateConversation}
+        <Conversation className="flex-1">
+          <ConversationContent>
+            {conversationMessages?.map((messages, msgIndex) => (
+              <Message key={messages?._id} from={messages.role}>
+                <MessageContent>
+                  {messages.status === "processing" ? (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Loader className="size-4 animate-spin" />
+                      <span>Thinking...</span>
+                    </div>
+                  ) : messages.status === "cancelled" ? (
+                    <span className="text-muted-foreground italic">
+                      Request Cancelled
+                    </span>
+                  ) : (
+                    <MessageResponse>{messages.content}</MessageResponse>
+                  )}
+                </MessageContent>
+                {messages.role === "assistant" &&
+                  messages.status === "completed" &&
+                  msgIndex === (conversationMessages?.length ?? 0) - 1 && (
+                    <MessageActions>
+                      <MessageAction
+                        onClick={() =>
+                          navigator.clipboard.writeText(messages.content)
+                        }
+                        label="Copy"
+                      >
+                        <Copy className="size-3" />
+                      </MessageAction>
+                    </MessageActions>
+                  )}
+              </Message>
+            ))}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+        <div className="p-3">
+          <PromptInput
+            onSubmit={handleSubmit}
+            className="mt-2 rounded-full!"
           >
-            <Plus className="size-3.5" />
-          </Button>
+            <PromptInputBody>
+              <PromptInputTextarea
+                placeholder="Ask Polaris anything..."
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+                disabled={isProcessing}
+              />
+            </PromptInputBody>
+            <PromptInputFooter>
+              <PromptInputTools />
+              <PromptInputSubmit
+                disabled={isProcessing ? false : !input}
+                status={isProcessing ? "streaming" : undefined}
+              />
+            </PromptInputFooter>
+          </PromptInput>
         </div>
       </div>
-      <Conversation className="flex-1">
-        <ConversationContent>
-          {conversationMessages?.map((messages, msgIndex) => (
-            <Message key={messages?._id} from={messages.role}>
-              <MessageContent>
-                {messages.status === "processing" ? (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Loader className="size-4 animate-spin" />
-                    <span>Thinking...</span>
-                  </div>
-                ) : (
-                  <MessageResponse>{messages.content}</MessageResponse>
-                )}
-              </MessageContent>
-              {messages.role === "assistant" &&
-                messages.status === "completed" &&
-                msgIndex === (conversationMessages?.length ?? 0) - 1 && (
-                  <MessageActions>
-                    <MessageAction
-                      onClick={() =>
-                        navigator.clipboard.writeText(messages.content)
-                      }
-                      label="Copy"
-                    >
-                      <Copy className="size-3" />
-                    </MessageAction>
-                  </MessageActions>
-                )}
-            </Message>
-          ))}
-        </ConversationContent>
-        <ConversationScrollButton />
-      </Conversation>
-      <div className="p-3">
-        <PromptInput onSubmit={handleSubmit} className="mt-2 rounded-full!">
-          <PromptInputBody>
-            <PromptInputTextarea
-              placeholder="Ask Polaris anything..."
-              onChange={(e) => setInput(e.target.value)}
-              value={input}
-              disabled={isProcessing}
-            />
-          </PromptInputBody>
-          <PromptInputFooter>
-            <PromptInputTools />
-            <PromptInputSubmit
-              disabled={isProcessing ? false : !input}
-              status={isProcessing ? "streaming" : undefined}
-            />
-          </PromptInputFooter>
-        </PromptInput>
-      </div>
-    </div>
+    </>
   );
 };
 export default ConversationSidebar
