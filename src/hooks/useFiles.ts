@@ -32,6 +32,9 @@ export const useDeleteFile = ()=>{
 export const useFile = (fileId:Id<'files'>|null)=>(
   useQuery(api.public.queries.files.getFile, fileId ? { id: fileId } : 'skip')
 )
+export const useFiles = (projectId: Id<'projects'> | null) => (
+  useQuery(api.public.queries.files.getFiles, projectId ? { projectId } : 'skip')
+)
 export const useFilePath = (fileId:Id<'files'>|null)=>(
   useQuery(api.public.queries.files.getFilePath, fileId ? { id: fileId } : 'skip')
 )

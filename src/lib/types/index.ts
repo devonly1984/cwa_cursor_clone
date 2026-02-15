@@ -1,0 +1,1 @@
+export type webContainerStatus = 'idle' | 'booting' | 'installing' | 'running' | 'error'

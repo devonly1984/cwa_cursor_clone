@@ -56,7 +56,7 @@ const ConversationSidebar = ({ projectId }: ConversationSidebarProps) => {
     );
     const handleCancel = async()=>{
       try {
-        await ky.post("/api.messages/cancel", {
+        await ky.post("/api/messages/cancel", {
           json: {
             projectId,
           },

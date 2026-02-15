@@ -8,6 +8,7 @@ import { Allotment } from "allotment";
 
 import {FileExplorer} from "@/components/fileExplorer/"
 import EditorView from "@/components/editor/views/EditorView";
+import PreviewView from "@/components/preview/views/PreviewView";
 const MIN_SIDEBAR_WIDTH=200;
 const MAX_SIDEBAR_WIDTH=800;
 const DEFAULT_SIDEBAR_WIDTH=350;
@@ -38,29 +39,32 @@ const ProjectIdView = ({ projectId }: ProjectIdViewProps) => {
         <div
           className={cn(
             "absolute inset-0",
-            activeView === "editor" ? "visible" : "invisible"
+            activeView === "editor" ? "visible" : "invisible",
           )}
         >
-          <Allotment defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}>
+          <Allotment
+            defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}
+          >
             <Allotment.Pane
-            snap
-            minSize={MIN_SIDEBAR_WIDTH}
-            maxSize={MAX_SIDEBAR_WIDTH}
-            preferredSize={DEFAULT_SIDEBAR_WIDTH}>
-              <FileExplorer projectId={projectId}/>
+              snap
+              minSize={MIN_SIDEBAR_WIDTH}
+              maxSize={MAX_SIDEBAR_WIDTH}
+              preferredSize={DEFAULT_SIDEBAR_WIDTH}
+            >
+              <FileExplorer projectId={projectId} />
             </Allotment.Pane>
             <Allotment.Pane>
-             <EditorView projectId={projectId}/>
+              <EditorView projectId={projectId} />
             </Allotment.Pane>
           </Allotment>
         </div>
         <div
           className={cn(
             "absolute inset-0",
-            activeView === "preview" ? "visible" : "invisible"
+            activeView === "preview" ? "visible" : "invisible",
           )}
         >
-          <div className="">Preview</div>
+          <PreviewView projectId={projectId} />
         </div>
       </div>
     </div>

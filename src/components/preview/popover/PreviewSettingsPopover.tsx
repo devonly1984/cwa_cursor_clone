@@ -1,0 +1,145 @@
+
+"use client"
+import {useState} from 'react';
+import {useForm} from '@tanstack/react-form';
+import { Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {Popover,PopoverContent,PopoverTrigger} from '@/components/ui/popover'
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+} from "@/components/ui/field";
+import { Input } from '@/components/ui/input';
+import { Doc,Id } from '../../../../convex/_generated/dataModel';
+import { useUpdateProjectSettings } from '@/hooks/useProjects';
+import { settingsSchema } from '@/lib/schemas/settings';
+interface PreviewSettingsPopoverProps {
+    projectId: Id<'projects'>;
+    initialValues?: Doc<'projects'>['settings'];
+    onSave?:()=>void;
+}
+const PreviewSettingsPopover = ({
+  projectId,
+  initialValues,
+  onSave,
+}: PreviewSettingsPopoverProps) => {
+    const [open, setOpen] = useState(false)
+    const updateSettings = useUpdateProjectSettings()
+    const settingsForm = useForm({
+      defaultValues: {
+        installCommand: initialValues?.installCommand ?? "",
+        devCommand: initialValues?.devCommand ?? "",
+      },
+      validators:  {
+        onSubmit: settingsSchema
+      },
+      onSubmit:async({value})=>{
+        await updateSettings({
+          id: projectId,
+          settings: {
+            installCommand: value.installCommand || undefined,
+            devCommand: value.devCommand || undefined,
+          },
+        });
+        setOpen(false);
+        onSave?.();
+
+      }
+    });
+    const handleOpenChange = (isOpen:boolean)=>{
+        if (isOpen) {
+            settingsForm.reset({
+              installCommand: initialValues?.installCommand ?? "",
+              devCommand: initialValues?.devCommand ?? "",
+            });
+        }
+        setOpen(isOpen);
+    }
+  return (
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          size={"sm"}
+          variant={"ghost"}
+          className="h-full rounded-none"
+          title="Preview Settings"
+        >
+          <Settings className="size-3" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80" align="end">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            settingsForm.handleSubmit();
+          }}
+        >
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <h4 className="font-medium text-sm">Preview Settings</h4>
+              <p className="text-xs text-muted-foreground">
+                Configure how your project runs in the preview
+              </p>
+            </div>
+            <settingsForm.Field name="installCommand">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>
+                    Install Command
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="npm install"
+                  />
+                  <FieldDescription>
+                    Command to install dependencies
+                  </FieldDescription>
+                </Field>
+              )}
+            </settingsForm.Field>
+            <settingsForm.Field name="devCommand">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>
+                    Start Command
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="npm run dev"
+                  />
+                  <FieldDescription>
+                    Command to start development server
+                  </FieldDescription>
+                </Field>
+              )}
+            </settingsForm.Field>
+            <settingsForm.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size={"sm"}
+                  disabled={!canSubmit || isSubmitting}
+                >
+                  {isSubmitting ? "Saving...." : "Save Changes"}
+                </Button>
+              )}
+            </settingsForm.Subscribe>
+          </div>
+        </form>
+      </PopoverContent>
+    </Popover>
+  );
+};
+export default PreviewSettingsPopover

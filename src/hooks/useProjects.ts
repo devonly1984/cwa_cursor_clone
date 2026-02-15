@@ -68,3 +68,5 @@ export const useRenameProject = (projectId: Id<"projects">) => {
     }
   );
 };
+
+export const useUpdateProjectSettings = () => useMutation(api.public.mutations.projects.updateSettings);

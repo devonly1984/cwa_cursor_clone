@@ -1,0 +1,128 @@
+"use client"
+import { useState } from "react"
+import { Allotment } from "allotment"
+import {
+  Loader2,
+  TerminalSquare,
+  AlertTriangle,
+  RefreshCw,
+
+} from "lucide-react";
+import { useWebContainer } from "../hooks/useWebContainer";
+import PreviewSettingsPopover from '@/components/preview/popover/PreviewSettingsPopover'
+import PreviewTerminal from "../layout/PreviewTerminal";
+import { Button } from "@/components/ui/button";
+import { useProject } from "@/hooks/useProjects";
+import { Id } from "../../../../convex/_generated/dataModel";
+interface PreviewViewProps {
+    projectId: Id<'projects'>
+}
+const PreviewView = ({ projectId }: PreviewViewProps) => {
+    const project =useProject(projectId);
+    const [showTerminal, setShowTerminal] = useState(false);
+    const { status, previewUrl, error, restart, terminalOutput } =
+      useWebContainer({
+        projectId,
+        enabled: true,
+        settings: project?.settings,
+      });
+
+      const isLoading = status === "installing" || status === "booting";
+  return (
+    <div className="h-full flex flex-col bg-background">
+      <div className="flex items-center border-b bg-sidebar shrink-0 h-8.75">
+        <Button
+          size={"sm"}
+          variant={"ghost"}
+          className="h-full rounded-none"
+          disabled={isLoading}
+          onClick={restart}
+          title="Restart Container"
+        >
+          <RefreshCw className="size-3" />
+        </Button>
+        <div className="flex-1 flex h-full items-center px-3 bg-background border-x text-xs text-muted foreground truncate font-mono">
+          {isLoading && (
+            <div className=" flex items-center gap-1.5">
+              <Loader2 className="size-3 animate-spin" />
+              {status === "booting" ? "Starting..." : "Installing..."}
+            </div>
+          )}
+          {previewUrl && <span className="truncate">{previewUrl}</span>}
+          {isLoading && !previewUrl && !error && (
+            <span>Ready to preview</span>
+          )}
+        </div>
+        <Button
+          size={"sm"}
+          variant={"ghost"}
+          className="h-full rounded-none"
+          title="Toggle Terminal"
+          onClick={() => setShowTerminal((value) => !value)}
+        >
+          <TerminalSquare className="size-3" />
+        </Button>
+        <PreviewSettingsPopover
+          projectId={projectId}
+          initialValues={project?.settings}
+          onSave={restart}
+        />
+      </div>
+      <div className="flex-1 min-h-0">
+        <Allotment vertical>
+          <Allotment.Pane>
+            {error && (
+              <div className="size-full flex items-center justify-center text-muted-foreground">
+                <div className="flex flex-col items-center gap-2 max-w-md mx-auto text-center">
+                  <AlertTriangle className="size-6" />
+                  <p className="text-sm font-medium">{error}</p>
+                  <Button
+                    size={"sm"}
+                    variant={"outline"}
+                    onClick={restart}
+                  >
+                    <RefreshCw className="size-4" />
+                    Restart
+                  </Button>
+                </div>
+              </div>
+            )}
+            {isLoading && !error && (
+              <div className="flex items-center justify-center text-muted-foreground size-full">
+                <div className="flex flex-col items-center gap-2 max-w-md mx-auto text-center">
+                  <Loader2 className="size-6 animate-spin" />
+                  <p className="text-sm font-medium">Installing...</p>
+                </div>
+              </div>
+            )}
+            {previewUrl && (
+              <iframe
+                src={previewUrl}
+                className="size-full border-0"
+                title="Preview"
+              />
+            )}
+          </Allotment.Pane>
+          <Allotment.Pane>
+            {showTerminal && (
+              <Allotment.Pane
+                minSize={100}
+                maxSize={500}
+                preferredSize={200}
+              >
+                <div className="h-full flex flex-col bg-background border-t">
+                  <div className="h-7 flex items-center px-3 text-xs text-muted-foreground border-b border-border/50 shrink-0 gap-1.5">
+                    <TerminalSquare className="size-3" />
+                    Terminal
+                  </div>
+                  <PreviewTerminal output={terminalOutput} />
+                </div>
+              </Allotment.Pane>
+            )}
+          </Allotment.Pane>
+        </Allotment>
+      </div>
+    </div>
+  );
+};
+export default PreviewView
